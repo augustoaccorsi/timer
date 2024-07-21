@@ -1,5 +1,5 @@
 import React from 'react';
-import { HistoryContainer, HistoryList } from './styles';
+import { HistoryContainer, HistoryList, Status } from './styles';
 
 const History = () => {
     return (
@@ -20,37 +20,49 @@ const History = () => {
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                         <tr>
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                         <tr>
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                         <tr>
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                         <tr>
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                         <tr>
                             <td>Task</td>
                             <td>20 minutos</td>
                             <td>Há cerca de 2 meses atrás</td>
-                            <td>Concluído</td>
+                            <td>
+                                <Status statusColor="green">Concluído</Status>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
