@@ -81,7 +81,7 @@ export const CountDownSeparator = styled.div`
     justify-content: center;
 `;
 
-export const StartContDownButton = styled.button`
+const DefaultButton = styled.button`
     width: 100%;
     border: 0;
     padding: 1rem;
@@ -93,11 +93,14 @@ export const StartContDownButton = styled.button`
 
     gap: 0.5rem;
     font-weight: bold;
+    transition: color 0.1s, background-color 0.1s;
 
     cursor: pointer;
+`;
+
+export const StartContDownButton = styled(DefaultButton)`
     background: ${props => props.theme['green-500']};
     color: ${props => props.theme['gray-100']};
-    transition: color 0.1s, background-color 0.1s;
 
     &:not(:disabled):hover {
         background: ${props => props.theme['green-700']};
@@ -106,5 +109,14 @@ export const StartContDownButton = styled.button`
     &:disabled {
         opacity: 0.7;
         cursor: not-allowed;
+    }
+`;
+
+export const StopContDownButton = styled(DefaultButton)`
+    background: ${props => props.theme['red-500']};
+    color: ${props => props.theme['gray-100']};
+
+    &:not(:disabled):hover {
+        background: ${props => props.theme['red-700']};
     }
 `;
