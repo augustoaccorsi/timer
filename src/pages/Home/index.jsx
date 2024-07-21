@@ -13,17 +13,24 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { differenceInSeconds } from 'date-fns';
 
+const STATUS = {
+    ON_GOING: 0,
+    COMPLETED: 1,
+    STOPPED: 2,
+};
+
 const generateCycle = (name, minutes) => {
     return {
         ID: uuidv4(),
         task: name,
         minutesAmout: parseInt(minutes),
         startDate: new Date(),
+        status: STATUS.ON_GOING,
     };
 };
 
 const Home = () => {
-    const [cycle, setCycles] = useState([]);
+    const [cycles, setCycles] = useState([]);
     const [cycleName, setCycleName] = useState('');
     const [duration, setDuration] = useState('');
     const [activeCycleId, setActiveCycleId] = useState(null);
@@ -36,27 +43,42 @@ const Home = () => {
             return;
         }
 
-        const newTask = generateCycle(cycleName, duration);
-        setCycles([newTask, ...cycle]);
+        const newCycle = generateCycle(cycleName, duration);
+        setCycles([newCycle, ...cycles]);
 
-        setActiveCycleId(newTask.ID);
+        setActiveCycleId(newCycle.ID);
         setCycleName('');
         setDuration('');
+        setAmoutSecondsPassed(0);
     };
 
-    const activeCycle = cycle.find((cycle) => cycle.ID === activeCycleId);
-
+    const activeCycle = cycles.find((cycle) => cycle.ID === activeCycleId);
+    const totalSeconds = activeCycle ? activeCycle.minutesAmout * 60 : 0;
     useEffect(() => {
+        let interval;
         if (activeCycle) {
-            setInterval(() => {
-                setAmoutSecondsPassed(
-                    differenceInSeconds(new Date(), activeCycle.startDate)
+            interval = setInterval(() => {
+                const diff = differenceInSeconds(
+                    new Date(),
+                    activeCycle.startDate
                 );
+
+                if (diff >= totalSeconds) {
+                    updateCycle(STATUS.COMPLETED);
+                    setAmoutSecondsPassed(totalSeconds);
+                    setActiveCycleId(null);
+                    clearInterval(interval);
+                }
+
+                setAmoutSecondsPassed(diff);
             }, 1000);
         }
-    }, [activeCycle]);
 
-    const totalSeconds = activeCycle ? activeCycle.minutesAmout * 60 : 0;
+        return () => {
+            clearInterval(interval);
+        };
+    }, [activeCycle, totalSeconds]);
+
     const currentSeconds = activeCycle ? totalSeconds - amoutSecondsPassed : 0;
     const minutesAmount = Math.floor(currentSeconds / 60);
     const secondsAmount = currentSeconds % 60;
@@ -64,9 +86,28 @@ const Home = () => {
     const minutes = String(minutesAmount).padStart(2, '0');
     const seconds = String(secondsAmount).padStart(2, '0');
 
+    useEffect(() => {
+        document.title = activeCycle
+            ? `Timer - ${minutes}:${seconds}`
+            : 'Timer';
+    }, [minutes, seconds]);
+
+    const updateCycle = (newStatus) => {
+        setCycles((state) =>
+            state.map((cycle) =>
+                cycle.ID === activeCycle.ID
+                    ? { ...cycle, status: newStatus }
+                    : cycle
+            )
+        );
+    };
+
     const handleStopTimer = () => {
+        updateCycle(STATUS.STOPPED);
         setActiveCycleId(null);
     };
+
+    console.log(cycles);
 
     return (
         <HomeContainer>
@@ -79,12 +120,13 @@ const Home = () => {
                         list="taskSuggestions"
                         value={cycleName}
                         onChange={(event) => setCycleName(event.target.value)}
+                        disabled={!!activeCycle}
                     />
 
                     <datalist id="taskSuggestions">
-                        <option value="Projeto 1" />
-                        <option value="Projeto 2" />
-                        <option value="Projeto 3" />
+                        {cycles.map((cycle) => (
+                            <option key={cycle.ID} value={cycle.task} />
+                        ))}
                     </datalist>
 
                     <label htmlFor="time">during</label>
@@ -93,10 +135,11 @@ const Home = () => {
                         type="number"
                         placeholder="00"
                         step={5}
-                        min={5}
+                        min={1}
                         max={60}
                         value={duration}
                         onChange={(event) => setDuration(event.target.value)}
+                        disabled={!!activeCycle}
                     />
                     <span>minutes.</span>
                 </FormContainer>
@@ -109,7 +152,7 @@ const Home = () => {
                     <span>{seconds[1]}</span>
                 </CountDownContainer>
 
-                {!activeCycleId ? (
+                {!activeCycle ? (
                     <StartContDownButton
                         type="submit"
                         disabled={
