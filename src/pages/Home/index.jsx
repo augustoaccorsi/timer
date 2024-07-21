@@ -19,9 +19,24 @@ const Home = () => {
                     <TaskInput
                         id="task"
                         placeholder="Give a name for your task"
+                        list="taskSuggestions"
                     />
+
+                    <datalist id="taskSuggestions">
+                        <option value="Projeto 1" />
+                        <option value="Projeto 2" />
+                        <option value="Projeto 3" />
+                    </datalist>
+
                     <label htmlFor="time">during</label>
-                    <MinutesInput id="time" type="number" placeholder="00" />
+                    <MinutesInput
+                        id="time"
+                        type="number"
+                        placeholder="00"
+                        step={5}
+                        min={5}
+                        max={60}
+                    />
                     <span>minutes.</span>
                 </FormContainer>
 
