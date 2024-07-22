@@ -1,9 +1,16 @@
 import React, { useContext } from 'react';
 import { FormContainer, TaskInput, MinutesInput } from './styles';
-import { CyclesContext } from '../..';
+import { CyclesContext } from '../../../../contexts/CyclesContext';
 
-const NewCycleForm = ({ cycleName, duration, setDuration, setCycleName }) => {
-    const { activeCycle, cycles } = useContext(CyclesContext);
+const NewCycleForm = () => {
+    const {
+        activeCycle,
+        cycles,
+        setCycleName,
+        setDuration,
+        cycleName,
+        duration,
+    } = useContext(CyclesContext);
 
     return (
         <FormContainer>
@@ -14,7 +21,6 @@ const NewCycleForm = ({ cycleName, duration, setDuration, setCycleName }) => {
                 list="taskSuggestions"
                 value={cycleName}
                 onChange={(event) => setCycleName(event.target.value)}
-                disabled={!!activeCycle}
             />
 
             <datalist id="taskSuggestions">

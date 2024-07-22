@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { CountDownContainer, CountDownSeparator } from './styles';
-import { CyclesContext, STATUS } from '../..';
 import { differenceInSeconds } from 'date-fns';
+import { CyclesContext } from '../../../../contexts/CyclesContext';
 
 const Contdown = () => {
-    const { activeCycle, updateCycle, setActiveCycleId } =
+    const { activeCycle, updateCycle, setActiveCycleId, STATUS } =
         useContext(CyclesContext);
     const [amoutSecondsPassed, setAmoutSecondsPassed] = useState(0);
 
