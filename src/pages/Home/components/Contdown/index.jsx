@@ -5,7 +5,12 @@ import { CyclesContext } from '../../../../contexts/CyclesContext';
 
 const Contdown = () => {
     const { activeCycle, updateCycle, STATUS } = useContext(CyclesContext);
-    const [amoutSecondsPassed, setAmoutSecondsPassed] = useState(0);
+    const [amoutSecondsPassed, setAmoutSecondsPassed] = useState(() => {
+        if (activeCycle) {
+            return differenceInSeconds(new Date(), activeCycle.startDate);
+        }
+        return 0;
+    });
 
     const totalSeconds = activeCycle ? activeCycle.minutesAmout * 60 : 0;
     const currentSeconds = activeCycle ? totalSeconds - amoutSecondsPassed : 0;

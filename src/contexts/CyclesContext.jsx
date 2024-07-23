@@ -1,9 +1,11 @@
-import React, { createContext, useReducer, useState } from 'react';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CyclesReducer from '../reducers/cycles/reducer';
 import { AddNewCycle, UpdateCurrentCycle } from '../reducers/cycles/actions';
 
 export const CyclesContext = createContext({});
+
+const STORAGE_ID = '@timer:cycles-state-1.0.0';
 
 const STATUS = {
     ON_GOING: 0,
@@ -22,10 +24,20 @@ const generateCycle = (name, minutes) => {
 };
 
 const CyclesContextProvider = (props) => {
-    const [cyclesState, dispatch] = useReducer(CyclesReducer, {
-        cycles: [],
-        activeCycleId: null,
-    });
+    const [cyclesState, dispatch] = useReducer(
+        CyclesReducer,
+        {
+            cycles: [],
+            activeCycleId: null,
+        },
+        (initialState) => {
+            const storedStateAsJSON = localStorage.getItem(STORAGE_ID);
+            if (storedStateAsJSON) {
+                return JSON.parse(storedStateAsJSON);
+            }
+            return initialState;
+        }
+    );
 
     const { cycles, activeCycleId } = cyclesState;
     const activeCycle = cycles.find((cycle) => cycle.ID === activeCycleId);
@@ -36,6 +48,11 @@ const CyclesContextProvider = (props) => {
     const updateCycle = (newStatus) => {
         dispatch(UpdateCurrentCycle(activeCycle.ID, newStatus));
     };
+
+    useEffect(() => {
+        const stateJSON = JSON.stringify(cyclesState);
+        localStorage.setItem(STORAGE_ID, stateJSON);
+    }, [cyclesState]);
 
     const startNewCycle = (event) => {
         event.preventDefault();
