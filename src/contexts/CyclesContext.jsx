@@ -1,5 +1,7 @@
 import React, { createContext, useReducer, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import CyclesReducer from '../reducers/cycles/reducer';
+import { AddNewCycle, UpdateCurrentCycle } from '../reducers/cycles/actions';
 
 export const CyclesContext = createContext({});
 
@@ -20,38 +22,10 @@ const generateCycle = (name, minutes) => {
 };
 
 const CyclesContextProvider = (props) => {
-    const [cyclesState, dispatch] = useReducer(
-        (state, action) => {
-            console.log(state);
-            console.log(action);
-
-            if (action.type === 'ADD_NEW_CYCLE') {
-                return {
-                    ...state,
-                    cycles: [action.payload.data, ...state.cycles],
-                    activeCycleId: action.payload.data.ID,
-                };
-            }
-
-            if (action.type === 'UPDATE_CURRENT_CYCLE') {
-                return {
-                    ...state,
-                    cycles: state.cycles.map((cycle) =>
-                        cycle.ID === action.payload.activeCycleId
-                            ? { ...cycle, status: action.payload.newStatus }
-                            : cycle
-                    ),
-                    activeCycleId: null,
-                };
-            }
-
-            return state;
-        },
-        {
-            cycles: [],
-            activeCycleId: null,
-        }
-    );
+    const [cyclesState, dispatch] = useReducer(CyclesReducer, {
+        cycles: [],
+        activeCycleId: null,
+    });
 
     const { cycles, activeCycleId } = cyclesState;
     const activeCycle = cycles.find((cycle) => cycle.ID === activeCycleId);
@@ -60,20 +34,7 @@ const CyclesContextProvider = (props) => {
     const [duration, setDuration] = useState('');
 
     const updateCycle = (newStatus) => {
-        // setCycles((state) =>
-        //     state.map((cycle) =>
-        //         cycle.ID === activeCycle.ID
-        //             ? { ...cycle, status: newStatus }
-        //             : cycle
-        //     )
-        // );
-        dispatch({
-            type: 'UPDATE_CURRENT_CYCLE',
-            payload: {
-                activeCycleId: activeCycle.ID,
-                newStatus: newStatus,
-            },
-        });
+        dispatch(UpdateCurrentCycle(activeCycle.ID, newStatus));
     };
 
     const startNewCycle = (event) => {
@@ -84,16 +45,9 @@ const CyclesContextProvider = (props) => {
         }
 
         const newCycle = generateCycle(cycleName, duration);
-        //setCycles([newCycle, ...cycles]);
 
-        dispatch({
-            type: 'ADD_NEW_CYCLE',
-            payload: {
-                data: newCycle,
-            },
-        });
+        dispatch(AddNewCycle(newCycle));
 
-        //setActiveCycleId(newCycle.ID);
         setCycleName('');
         setDuration('');
     };
