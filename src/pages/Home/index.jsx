@@ -16,13 +16,11 @@ const Home = () => {
         duration,
         cycleName,
         updateCycle,
-        setActiveCycleId,
         STATUS,
     } = useContext(CyclesContext);
 
     const handleStopTimer = () => {
         updateCycle(STATUS.STOPPED);
-        setActiveCycleId(null);
     };
 
     return (

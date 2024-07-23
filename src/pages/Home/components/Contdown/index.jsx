@@ -4,8 +4,7 @@ import { differenceInSeconds } from 'date-fns';
 import { CyclesContext } from '../../../../contexts/CyclesContext';
 
 const Contdown = () => {
-    const { activeCycle, updateCycle, setActiveCycleId, STATUS } =
-        useContext(CyclesContext);
+    const { activeCycle, updateCycle, STATUS } = useContext(CyclesContext);
     const [amoutSecondsPassed, setAmoutSecondsPassed] = useState(0);
 
     const totalSeconds = activeCycle ? activeCycle.minutesAmout * 60 : 0;
@@ -28,7 +27,6 @@ const Contdown = () => {
                 if (diff >= totalSeconds) {
                     updateCycle(STATUS.COMPLETED);
                     setAmoutSecondsPassed(totalSeconds);
-                    setActiveCycleId(null);
                     clearInterval(interval);
                 }
 
